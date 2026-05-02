@@ -1,0 +1,153 @@
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+# ---------------------------------------------------------------------------
+# Project metadata (PEP 621)
+# ---------------------------------------------------------------------------
+
+[project]
+name = "archepy"
+version = "0.1.0"
+description = "Multi-Subject Archetypal Analysis (MS-AA) for fMRI data, in Python."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+keywords = [
+    "archetypal-analysis",
+    "fmri",
+    "neuroimaging",
+    "multi-subject",
+    "matrix-factorization",
+]
+
+authors = [
+    { name = "Alex Shepherd", email = "13ashepherd@gmail.com" },
+]
+
+# Note: the upstream MATLAB toolbox is academic/non-profit only,
+# so this Python port inherits that restriction. PyPI does host
+# non-OSI software; we use the closest classifier available.
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: Free for non-commercial use",
+    "License :: Other/Proprietary License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+
+dependencies = [
+    "numpy>=1.23",
+]
+
+[project.optional-dependencies]
+# GPU acceleration via CuPy. Pick the wheel that matches your CUDA version.
+# CUDA 12.x: pip install archepy[gpu]
+# (For CUDA 11.x users, install cupy-cuda11x manually.)
+gpu = ["cupy-cuda12x>=12.0"]
+
+# fMRI helpers (NIfTI loading for noise estimation).
+fmri = ["nibabel>=4.0"]
+
+# Plotting helpers used by the synthetic-noise generator and any tutorials.
+viz = ["matplotlib>=3.5"]
+
+# Convenience: install everything (except dev tooling).
+all = [
+    "archepy[gpu]",
+    "archepy[fmri]",
+    "archepy[viz]",
+]
+
+# Tooling for contributors / running CI locally.
+dev = [
+    "pytest>=7",
+    "pytest-cov>=4",
+    "ruff>=0.4",
+    "mypy>=1.8",
+    "scipy>=1.10",  # used by some tests / examples
+]
+
+# Documentation build dependencies (kept in sync with docs/doc_requirements.txt).
+docs = [
+    "sphinx>=7.0,<9",
+    "furo>=2024.1",
+    "myst-parser>=2.0",
+    "nbsphinx>=0.9",
+    "sphinx-copybutton>=0.5",
+    "ipykernel",
+]
+
+[project.urls]
+Homepage = "https://github.com/the-brAIn-lab/archepy"
+Repository = "https://github.com/the-brAIn-lab/archepy"
+"Upstream MATLAB toolbox" = "https://github.com/JesperLH/Multisubject-Archetypal-Analysis"
+"Original paper" = "https://doi.org/10.1109/JSTSP.2016.2595103"
+
+# ---------------------------------------------------------------------------
+# Hatch (the build backend) — point it at the src/ layout
+# ---------------------------------------------------------------------------
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/archepy"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+    "/CITATION.cff",
+    "/pyproject.toml",
+]
+
+# ---------------------------------------------------------------------------
+# Ruff — linter + formatter
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort (import ordering)
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "NPY", # numpy-specific rules
+]
+# E501 (line too long) is handled by the formatter; ignore here.
+ignore = ["E501"]
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+filterwarnings = [
+    "error",                                          # treat warnings as errors by default
+    "ignore::DeprecationWarning:numpy",               # noisy numpy deprecations are OK
+]
+
+# ---------------------------------------------------------------------------
+# Mypy — optional type checking. Lenient for now; tighten later.
+# ---------------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "3.9"
+warn_unused_ignores = true
+warn_redundant_casts = true
+ignore_missing_imports = true     # cupy / nibabel don't ship type stubs

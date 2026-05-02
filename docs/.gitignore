@@ -1,0 +1,3 @@
+# Sphinx build output (committed source files only)
+_build/
+_autosummary/

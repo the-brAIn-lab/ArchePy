@@ -1,0 +1,13 @@
+# Documentation build dependencies.
+# Used both locally (via `pip install -r docs/doc_requirements.txt`)
+# and by ReadTheDocs (see .readthedocs.yaml).
+
+sphinx>=7.0,<9
+furo>=2024.1
+myst-parser>=2.0
+nbsphinx>=0.9
+sphinx-copybutton>=0.5
+
+# nbsphinx renders notebooks; needs the same Jupyter machinery
+# the user has when they author the notebook.
+ipykernel

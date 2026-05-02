@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+title: "ArchePy: Multi-Subject Archetypal Analysis for fMRI in Python"
+message: "If you use this software, please cite both this port and the original paper below."
+type: software
+authors:
+  - family-names: "Shepherd"
+    given-names: "Alex"
+version: 0.1.0
+date-released: "2026-05-02"
+license: "LicenseRef-DTU-Multisubject-AA-NonCommercial"
+repository-code: "https://github.com/the-brAIn-lab/archepy"
+url: "https://github.com/the-brAIn-lab/archepy"
+keywords:
+  - "archetypal-analysis"
+  - "fmri"
+  - "neuroimaging"
+  - "multi-subject"
+preferred-citation:
+  type: article
+  title: "Archetypal Analysis for Modeling Multisubject fMRI Data"
+  authors:
+    - family-names: "Hinrich"
+      given-names: "Jesper Løve"
+    - family-names: "Bardenfleth"
+      given-names: "Sophia Elizabeth"
+    - family-names: "Røge"
+      given-names: "Rasmus"
+    - family-names: "Churchill"
+      given-names: "Nathan W."
+    - family-names: "Madsen"
+      given-names: "Kristoffer H."
+    - family-names: "Mørup"
+      given-names: "Morten"
+  journal: "IEEE Journal on Selected Topics in Signal Processing"
+  volume: 10
+  issue: 7
+  start: 1160
+  end: 1171
+  year: 2016
+  doi: "10.1109/JSTSP.2016.2595103"
