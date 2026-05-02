@@ -13,8 +13,6 @@ Original MATLAB authors:
 
 from __future__ import annotations
 
-from typing import Optional, Tuple
-
 import numpy as np
 
 
@@ -25,8 +23,8 @@ def supdate_indi_step(
     muS: np.ndarray | float,
     numObs: int,
     niter: int,
-    sigmaSq: Optional[np.ndarray] = None,
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    sigmaSq: np.ndarray | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     S = np.array(S, dtype=np.float64, order="C")
     XCtX = np.array(XCtX, dtype=np.float64, order="C")
     CtXtXC = np.array(CtXtXC, dtype=np.float64, order="C")

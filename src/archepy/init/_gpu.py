@@ -7,7 +7,7 @@ without CuPy installed can still ``import archepy``.
 
 from __future__ import annotations
 
-from typing import Iterable, List, Optional
+from collections.abc import Iterable
 
 import numpy as np
 
@@ -21,12 +21,12 @@ def furthest_sum_gpu(
     K,
     noc: int,
     i: int | Iterable[int],
-    exclude: Optional[Iterable[int]] = None,
+    exclude: Iterable[int] | None = None,
     *,
-    treat_as_kernel: Optional[bool] = None,
+    treat_as_kernel: bool | None = None,
     one_based: bool = False,
     device: int | None = None,
-) -> List[int]:
+) -> list[int]:
     """
     GPU FurthestSum. See :func:`archepy.init.furthest_sum` for parameters.
 
@@ -34,8 +34,7 @@ def furthest_sum_gpu(
     """
     if cp is None:
         raise ImportError(
-            "CuPy is required for furthest_sum_gpu. "
-            "Install with: pip install archepy[gpu]"
+            "CuPy is required for furthest_sum_gpu. Install with: pip install archepy[gpu]"
         )
 
     if device is not None:
@@ -56,7 +55,7 @@ def furthest_sum_gpu(
         N = A.shape[0]
         Kdiag = cp.diag(A).astype(A.dtype)
 
-        def dist_from(seed: int) -> "cp.ndarray":
+        def dist_from(seed: int) -> cp.ndarray:
             d2 = Kdiag - 2.0 * A[seed, :] + Kdiag[seed]
             cp.maximum(d2, 0.0, out=d2)
             return cp.sqrt(d2)
@@ -66,18 +65,18 @@ def furthest_sum_gpu(
         N = int(X.shape[1])
         norms2 = cp.sum(X * X, axis=0)
 
-        def dist_from(seed: int) -> "cp.ndarray":
+        def dist_from(seed: int) -> cp.ndarray:
             Kq = X[:, seed] @ X
             d2 = norms2 - 2.0 * Kq + norms2[seed]
             cp.maximum(d2, 0.0, out=d2)
             return cp.sqrt(d2)
 
-    def to0(idx) -> List[int]:
+    def to0(idx) -> list[int]:
         if isinstance(idx, (int, np.integer)):
             return [int(idx) - 1 if one_based else int(idx)]
         return [int(x) - 1 if one_based else int(x) for x in idx]
 
-    selected: List[int] = to0(i)
+    selected: list[int] = to0(i)
     if not selected:
         raise ValueError("Initial seed `i` must contain at least one index.")
     rolling_idx = selected[0]

@@ -63,11 +63,11 @@ def test_msaa_runs_on_planted_structure():
 
     # Plant structure consistent with the AA model: each voxel is a sparse
     # mixture of K underlying archetype time-courses.
-    archetype_courses = rng.standard_normal((T, K))            # (T, K)
+    archetype_courses = rng.standard_normal((T, K))  # (T, K)
 
     subjects = []
     for _ in range(n_subjects):
-        S_mix = rng.dirichlet(np.ones(K), size=V).T            # (K, V)
+        S_mix = rng.dirichlet(np.ones(K), size=V).T  # (K, V)
         X = archetype_courses @ S_mix + 0.05 * rng.standard_normal((T, V))
         subjects.append(Subject(X=X.astype(float), sX=X.astype(float)))
 

@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -47,10 +47,10 @@ class SubjectT:
 
 
 def multi_subject_aa_T(
-    subj: List[SubjectT],
+    subj: list[SubjectT],
     noc: int,
-    opts: Optional[Dict[str, Any]] = None,
-) -> Tuple[List[Dict[str, Any]], np.ndarray, np.ndarray, float, float]:
+    opts: dict[str, Any] | None = None,
+) -> tuple[list[dict[str, Any]], np.ndarray, np.ndarray, float, float]:
     """
     Fit Multi-Subject Archetypal Analysis (temporal variant).
 
@@ -80,7 +80,7 @@ def multi_subject_aa_T(
 
     rng = np.random.default_rng(rngSEED)
 
-    V = subj[0].X.shape[0]
+    subj[0].X.shape[0]
     T = subj[0].X.shape[1]
     sT = subj[0].sX.shape[1]
     B = len(subj)
@@ -273,7 +273,7 @@ def multi_subject_aa_T(
             s.sXC = s.sXC[:, ind]
 
     C_np = to_numpy(C, runGPU)
-    results_subj: List[Dict[str, Any]] = []
+    results_subj: list[dict[str, Any]] = []
     for bi, s in enumerate(subj):
         out = {
             "S": to_numpy(s.S, runGPU),
@@ -293,7 +293,7 @@ def multi_subject_aa_T(
 
 
 def _Cupdate_multi_subjects_T(
-    subj: List[Any],
+    subj: list[Any],
     C,
     muC,
     NLL: float,

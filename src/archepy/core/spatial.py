@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -62,10 +62,10 @@ class Subject:
 
 
 def multi_subject_aa(
-    subj: List[Subject],
+    subj: list[Subject],
     noc: int,
-    opts: Optional[Dict[str, Any]] = None,
-) -> Tuple[List[Dict[str, Any]], np.ndarray, np.ndarray, float, float]:
+    opts: dict[str, Any] | None = None,
+) -> tuple[list[dict[str, Any]], np.ndarray, np.ndarray, float, float]:
     """
     Fit Multi-Subject Archetypal Analysis (spatial variant).
 
@@ -123,8 +123,7 @@ def multi_subject_aa(
 
     if runGPU and cp is None:
         raise ImportError(
-            "opts['use_gpu']=True but CuPy is not installed. "
-            "Install with: pip install archepy[gpu]"
+            "opts['use_gpu']=True but CuPy is not installed. Install with: pip install archepy[gpu]"
         )
 
     rng = np.random.default_rng(rngSEED)
@@ -243,8 +242,7 @@ def multi_subject_aa(
             0.5 * s.SST_sigmaSq
             - to_float((s.sXC * s.XSt).sum(), runGPU)
             + 0.5 * to_float((s.CtXtXC * s.SSt).sum(), runGPU)
-            + (s.T / 2.0)
-            * (V * np.log(2.0 * np.pi) + to_float(xp.log(s.sigmaSq).sum(), runGPU))
+            + (s.T / 2.0) * (V * np.log(2.0 * np.pi) + to_float(xp.log(s.sigmaSq).sum(), runGPU))
         )
         NLL += s.NLL
         SST_sigmaSq += s.SST_sigmaSq
@@ -359,7 +357,7 @@ def multi_subject_aa(
             s.sXC = s.sXC[:, ind]
 
     C_np = to_numpy(C, runGPU)
-    results_subj: List[Dict[str, Any]] = []
+    results_subj: list[dict[str, Any]] = []
     for bi, s in enumerate(subj):
         results_subj.append(
             {
@@ -396,9 +394,7 @@ def _Cupdate_multi_subjects(subj, C, muC, NLL, niter, runGPU):
     sXtsX_list = [s.sX.T @ s.sX for s in subj]
 
     log_var_terms = [
-        float(s.T)
-        / 2.0
-        * (V * np.log(2.0 * np.pi) + to_float(xp.log(s.sigmaSq).sum(), runGPU))
+        float(s.T) / 2.0 * (V * np.log(2.0 * np.pi) + to_float(xp.log(s.sigmaSq).sum(), runGPU))
         for s in subj
     ]
 

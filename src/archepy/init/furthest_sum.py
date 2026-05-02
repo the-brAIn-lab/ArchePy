@@ -10,7 +10,7 @@ For GPU acceleration on large problems, see :func:`archepy.init.furthest_sum_gpu
 
 from __future__ import annotations
 
-from typing import Iterable, List, Optional
+from collections.abc import Iterable
 
 import numpy as np
 
@@ -19,11 +19,11 @@ def furthest_sum(
     K: np.ndarray,
     noc: int,
     i: int | Iterable[int],
-    exclude: Optional[Iterable[int]] = None,
+    exclude: Iterable[int] | None = None,
     *,
-    treat_as_kernel: Optional[bool] = None,
+    treat_as_kernel: bool | None = None,
     one_based: bool = False,
-) -> List[int]:
+) -> list[int]:
     """
     Greedy FurthestSum selection of ``noc`` candidate archetype indices.
 
@@ -63,12 +63,12 @@ def furthest_sum(
         # Data matrix: D x N — observations are columns.
         N = A.shape[1]
 
-    def to0(idx: Iterable[int] | int) -> List[int]:
+    def to0(idx: Iterable[int] | int) -> list[int]:
         if isinstance(idx, (int, np.integer)):
             return [int(idx) - 1 if one_based else int(idx)]
         return [int(x) - 1 if one_based else int(x) for x in idx]
 
-    selected: List[int] = to0(i)
+    selected: list[int] = to0(i)
     if len(selected) == 0:
         raise ValueError("Initial seed `i` must contain at least one index.")
     rolling_idx = selected[0]

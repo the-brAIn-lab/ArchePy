@@ -12,7 +12,7 @@ Two utilities are provided:
 
 from __future__ import annotations
 
-from typing import Optional, Sequence
+from collections.abc import Sequence
 
 import numpy as np
 
@@ -22,7 +22,7 @@ except ImportError:
     nib = None
 
 
-def estimate_background_noise(file: str, file_filt: Optional[str]) -> float:
+def estimate_background_noise(file: str, file_filt: str | None) -> float:
     """
     Estimate a noise variance threshold from background voxels of a NIfTI.
 
@@ -89,7 +89,7 @@ def estimate_background_noise(file: str, file_filt: Optional[str]) -> float:
 def generate_synthetic_noise(
     sx: int,
     sy: int,
-    noise_var: Optional[Sequence[float]] = None,
+    noise_var: Sequence[float] | None = None,
     stepsize: int = 8,
     show_plot: bool = False,
 ) -> np.ndarray:
@@ -135,9 +135,7 @@ def generate_synthetic_noise(
 
     for j in range(num_noise):
         X = np.zeros((sx, sy), dtype=float)
-        var_levels = np.linspace(
-            0.01 * noise_var[j], noise_var[j], num=noise_contours.size
-        )
+        var_levels = np.linspace(0.01 * noise_var[j], noise_var[j], num=noise_contours.size)
         for r, v in zip(noise_contours, var_levels):
             mask = dist <= r
             X[mask] = v
@@ -148,8 +146,7 @@ def generate_synthetic_noise(
             import matplotlib.pyplot as plt
         except ImportError as exc:
             raise ImportError(
-                "matplotlib is required for show_plot=True. "
-                "Install with: pip install archepy[viz]"
+                "matplotlib is required for show_plot=True. Install with: pip install archepy[viz]"
             ) from exc
 
         import numpy.ma as ma
@@ -164,7 +161,7 @@ def generate_synthetic_noise(
         for j in range(num_noise):
             X = noise[:, :, j]
             Xstd = np.sqrt(X)
-            sample = np.random.randn(sx, sy) * Xstd
+            sample = np.random.default_rng().standard_normal((sx, sy)) * Xstd
 
             mX = ma.masked_where(X == 0, X)
             mXstd = ma.masked_where(Xstd == 0, Xstd)
